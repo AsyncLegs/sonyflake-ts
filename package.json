@@ -1,0 +1,55 @@
+{
+  "name": "sonyflake-ts",
+  "version": "0.1.0",
+  "description": "TypeScript port of github.com/sony/sonyflake — distributed unique ID generator for Node.js and Bun",
+  "type": "module",
+  "main": "./dist/sonyflake.js",
+  "types": "./dist/sonyflake.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/sonyflake.d.ts",
+      "import": "./dist/sonyflake.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
+    "test": "bun test",
+    "test:node": "node --import tsx --test test/sonyflake.test.ts"
+  },
+  "keywords": [
+    "sonyflake",
+    "snowflake",
+    "id",
+    "uuid",
+    "unique-id",
+    "distributed",
+    "bigint",
+    "typescript",
+    "bun",
+    "node"
+  ],
+  "author": "Ruslan Terekhov <asynchronous.legs@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asynclegs/sonyflake-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asynclegs/sonyflake-ts/issues"
+  },
+  "homepage": "https://github.com/asynclegs/sonyflake-ts#readme",
+  "engines": {
+    "node": ">=20",
+    "bun": ">=1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
