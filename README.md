@@ -1,6 +1,17 @@
 # sonyflake-ts
 
+[![npm version](https://img.shields.io/npm/v/sonyflake-ts.svg)](https://www.npmjs.com/package/sonyflake-ts)
+[![npm downloads](https://img.shields.io/npm/dm/sonyflake-ts.svg)](https://www.npmjs.com/package/sonyflake-ts)
+[![CI](https://github.com/AsyncLegs/sonyflake-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/AsyncLegs/sonyflake-ts/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/sonyflake-ts.svg)](./LICENSE)
+
 TypeScript port of [sony/sonyflake](https://github.com/sony/sonyflake) for Node.js (≥20) and Bun.
+
+```sh
+npm install sonyflake-ts
+# or
+bun add sonyflake-ts
+```
 
 Sonyflake is a distributed unique ID generator inspired by Twitter's Snowflake, with a different bit layout optimised for longer lifetime and more machines:
 
