@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { Sonyflake, decompose } from "../src/sonyflake.ts";
 
 describe("Sonyflake", () => {
@@ -29,12 +29,12 @@ describe("Sonyflake", () => {
 
   it("rejects future startTime", async () => {
     const future = new Date(Date.now() + 60_000);
-    expect(Sonyflake.create({ startTime: future, machineID: 1 })).rejects.toThrow();
+    await expect(Sonyflake.create({ startTime: future, machineID: 1 })).rejects.toThrow();
   });
 
   it("rejects out-of-range machine id", async () => {
-    expect(Sonyflake.create({ machineID: 0x1_0000 })).rejects.toThrow();
-    expect(Sonyflake.create({ machineID: -1 })).rejects.toThrow();
+    await expect(Sonyflake.create({ machineID: 0x1_0000 })).rejects.toThrow();
+    await expect(Sonyflake.create({ machineID: -1 })).rejects.toThrow();
   });
 
   it("encodes time relative to startTime", async () => {

@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  test-bun:
     name: test (bun + go compat)
     runs-on: ubuntu-latest
     steps:
@@ -27,18 +27,52 @@ jobs:
           go-version: "1.22"
           cache-dependency-path: compat/go.sum
 
-      - name: Pre-fetch Go compat module
+      - name: Build Go compat helper
         working-directory: compat
-        run: go mod download
+        run: go build -o sonyflake-compat .
 
       - name: Install deps
         run: bun install --no-save
 
-      - name: Build
+      - name: Build TS
         run: bun run build
 
-      - name: Test (includes sony/sonyflake compat)
-        run: bun test
+      - name: Test (vitest under Bun, includes sony/sonyflake compat)
+        run: bun x vitest run
+
+  test-node:
+    name: test (node + go compat)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: compat/go.sum
+
+      - name: Build Go compat helper
+        working-directory: compat
+        run: go build -o sonyflake-compat .
+
+      - name: Install deps
+        run: npm install --no-save
+
+      - name: Build TS
+        run: npm run build
+
+      - name: Test (vitest under Node, includes sony/sonyflake compat)
+        run: npx vitest run
 
   pack-dry-run:
     name: npm pack (dry run)
@@ -48,9 +82,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - run: bun install --no-save
-      - run: bun run build
+      - run: npm install --no-save
+      - run: npm run build
       - run: npm pack --dry-run

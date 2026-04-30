@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from "bun:test";
+import { describe, it, expect, beforeAll } from "vitest";
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -16,13 +16,22 @@ interface GoRow {
   machineID: bigint;
 }
 
+const compatBin = resolve(compatDir, "sonyflake-compat");
+
 function runGoHelper(args: string[]): GoRow[] {
-  const res = spawnSync("go", ["run", ".", ...args], {
+  // Prefer a prebuilt binary (CI builds it once); fall back to `go run`.
+  const useBin = existsSync(compatBin);
+  const cmd = useBin ? compatBin : "go";
+  const cmdArgs = useBin ? args : ["run", ".", ...args];
+  const res = spawnSync(cmd, cmdArgs, {
     cwd: compatDir,
     encoding: "utf8",
+    timeout: 60_000,
   });
   if (res.status !== 0) {
-    throw new Error(`go helper failed: ${res.stderr}`);
+    throw new Error(
+      `go helper failed (status=${res.status}): stderr=${res.stderr} stdout=${res.stdout}`,
+    );
   }
   const lines = res.stdout.trim().split("\n");
   // Drop header.
@@ -45,10 +54,13 @@ describe.skipIf(!goAvailable || !existsSync(compatDir))(
     let goRows: GoRow[];
     let goRunStartMs: number;
 
-    beforeAll(() => {
-      goRunStartMs = Date.now();
-      goRows = runGoHelper(["-machine", String(machineID), "-n", "32"]);
-    });
+    beforeAll(
+      () => {
+        goRunStartMs = Date.now();
+        goRows = runGoHelper(["-machine", String(machineID), "-n", "32"]);
+      },
+      60_000,
+    );
 
     it("our decompose() matches Go Decompose() bit-for-bit", () => {
       for (const row of goRows) {
