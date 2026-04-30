@@ -1,6 +1,6 @@
 {
   "name": "sonyflake-ts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript port of github.com/sony/sonyflake — distributed unique ID generator for Node.js and Bun",
   "type": "module",
   "main": "./dist/sonyflake.js",
