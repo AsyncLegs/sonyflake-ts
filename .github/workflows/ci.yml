@@ -25,6 +25,11 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
+          cache-dependency-path: compat/go.sum
+
+      - name: Pre-fetch Go compat module
+        working-directory: compat
+        run: go mod download
 
       - name: Install deps
         run: bun install --no-save
